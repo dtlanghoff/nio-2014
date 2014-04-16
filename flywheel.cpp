@@ -15,12 +15,12 @@ int main() {
     int profit = 0;
     
     for (int i = 0; i < (n-1); i++) {
-        // kjøp kraft når prisen er på topp
+        // kjøp kraft når prisen er på botn
         if (!charged && (prognosis[i+1] > prognosis[i])) {
             charged = true;
             profit -= prognosis[i];
         }
-        // sel kraft når prisen er på botn
+        // sel kraft når prisen er på topp
         else if (charged && (prognosis[i+1] < prognosis[i])) {
             charged = false;
             profit += prognosis[i];
