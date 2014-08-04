@@ -8,11 +8,11 @@ int main() {
     cin >> n;
     vector<int> prognosis(n);
     
-    for (int i = 0; i < n; i++)
-        cin >> prognosis[i];
-    
     bool charged = false;
     int profit = 0;
+    
+    for (int i = 0; i < n; i++)
+        cin >> prognosis[i];
     
     for (int i = 0; i < (n-1); i++) {
         // kjøp kraft når prisen er på botn
