@@ -7,8 +7,8 @@ int main() {
     int ncol, nrow, ninstr;
     cin >> ncol >> nrow >> ninstr;
     
-    int length(ninstr);
-    char colour(ninstr);
+    int length;
+    char colour;
     vector< vector<char> > image(nrow, vector<char>(ncol));
     int row = 0, col = 0;
     
