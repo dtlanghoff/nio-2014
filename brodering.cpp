@@ -16,10 +16,10 @@ int main() {
         cin >> length >> colour;
         for (int j = 0; j < length; j++) {
             image[row][col] = colour;
-            if (col == ((row%2 == 0) ? (ncol-1) : 0))
+            if (col == ((row % 2 == 0) ? (ncol-1) : 0))
                 row++;
             else
-                col += (row%2 == 0) ? 1 : -1;
+                col += (row % 2 == 0) ? 1 : -1;
         }
     }
     
