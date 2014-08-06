@@ -17,7 +17,7 @@ int distance(struct concert *src, struct concert *dst) {
 int withcost(struct concert *curr) {
     struct concert *a, *b;
     a = curr->next;
-    b = a-> next;
+    b = a->next;
     
     return distance(curr, a) + distance(a, b) + a->ticket;
 }
