@@ -1,103 +1,88 @@
-#include <cstdlib>
-#include <iostream>
+#include <cstdio>
 #include <vector>
 
 using namespace std;
 
-struct iteminfo {
-    int a, b;
-    bool error;
-};
+int connected_components(int* component, int vertex, int component_id, const int* edgeindex, const int* edge, int* colour, int current_colour, int npeople) {
+  int count = 1;
 
-struct iteminfo *alloc_presents(int *item, vector< vector<int> > edges, int current) {
-    int m = item[current];
-    int edge;
-    vector<int> new_children;
-    
-    struct iteminfo *new_presents;
-    struct iteminfo *child_presents;
-    
-    new_presents = new iteminfo;
-    new_presents->a = 0;
-    new_presents->b = 0;
-    new_presents->error = false;
-    
-    if (m == 0)
-        new_presents->a = 1;
-    else
-        new_presents->b = 1;
-    
-    for (unsigned int i = 0; i < edges[current].size(); i++) {
-        edge = edges[current][i];
-        if (item[edge] == m) {
-            new_presents->error = true;
-        }
-        else if (item[edge] == -1) {
-            item[edge] = m^1;
-            new_children.push_back(edge);
-        }
+  if (vertex == -1) {
+    for (int i = 0; i < npeople; i++) {
+      if (component[i] == 0) {
+        vertex = i;
+        break;
+      }
     }
-    
-    for (unsigned int i = 0; i < new_children.size(); i++) {
-        child_presents = alloc_presents(item, edges, new_children[i]);
-        if (child_presents->error) {
-            new_presents->error = true;
-            break;
-        }
-        else {
-            new_presents->a += child_presents->a;
-            new_presents->b += child_presents->b;
-        }
+  }
+
+  int start = edgeindex[vertex];
+  int end = edgeindex[vertex+1];
+
+  colour[vertex] = current_colour;
+  component[vertex] = component_id;
+  for (int i = start; i < end; i++) {
+    int tail = edge[2*i+1];
+    if (colour[tail] == current_colour)
+      return -1;
+    if (component[tail] == 0) {
+      int c = connected_components(component, tail, component_id, edgeindex, edge, colour, current_colour^1, npeople);
+      if (c != -1)
+        count += c;
+      else
+        return -1;
     }
-    
-    return new_presents;
+  }
+
+  return count;
 }
 
 int main() {
-    int npeople, current, neighbour, nneighbours;
-    int books = 0;
-    int considered = 0;
-    bool found_root;  
-    
-    struct iteminfo *info;
-    
-    cin >> npeople;
-    
-    vector< vector<int> > edges(npeople, vector<int>(0));
-    int item[npeople];
-    
-    for (int i = 0; i < npeople; i++) {
-        item[i] = -1;
-        cin >> nneighbours;
-        for (int j = 0; j < nneighbours; j++) {
-            cin >> neighbour;
-            if (neighbour > i) {
-                edges[i].push_back(neighbour);
-            }
-        }
+  int n;
+  scanf("%d", &n);
+
+  int* component = new int[n]();
+  int* colour = new int[n]();
+  int* edgeindex = new int[n+1]();
+  int* edge = new int[799800]();
+
+  int edgeoffset = 0;
+  for (int i = 0; i < n; i++) {
+    int b, m;
+    scanf("%d", &m);
+    edgeindex[i] = edgeoffset;
+    for (int j = 0; j < m; j++) {
+      scanf("%d", &b);
+      edge[2*(edgeoffset+j)] = i;
+      edge[2*(edgeoffset+j)+1] = b;
     }
-    
-    do {
-        current = 0;
-        found_root = false;
-        while (!found_root) {
-            if (item[current] == -1) {
-                found_root = true;
-            }
-            else {
-                current++;
-            }
-        }
-        item[current] = 0;
-        info = alloc_presents(item, edges, current);
-        if (info->error) {
-            cout << 0 << endl;
-            return 0;
-        }
-        books += max(info->a, info->b);
-        considered += info->a + info->b;
-    } while (considered < npeople);
-    
-    cout << books << endl;
-    return 0;
+    edgeoffset += m;
+  }
+
+  edgeindex[n] = edgeoffset;
+
+  int count = 0, ncomponents = 0;
+  for (int component_id = 1; ; component_id++) {
+    int c = connected_components(component, -1, component_id, edgeindex, edge, colour, 2, n);
+    if (c == -1) {
+      printf("0\n");
+      return 0;
+    }
+    count += c;
+    if (count == n) {
+      ncomponents = component_id;
+      break;
+    }
+  }
+
+  int* coloursum = new int[2*ncomponents]();
+  for (int i = 0; i < n; i++)
+    coloursum[((component[i]-1)<<1)|(colour[i]^2)]++;
+
+  int gifts = 0;
+  for (int i = 0; i < ncomponents; i++)
+    gifts += max(coloursum[i<<1], coloursum[(i<<1)|1]);
+
+  printf("%d\n", gifts);
+
+  return 0;
 }
