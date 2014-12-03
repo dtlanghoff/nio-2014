@@ -3,7 +3,8 @@
 
 using namespace std;
 
-int connected_components(int* component, int vertex, int component_id, const int* edgeindex, const int* edge, int* colour, int current_colour, int npeople) {
+int connected_components(int* component, int vertex, int component_id,const int* edgeindex, 
+                         const int* edge, int* colour, int current_colour, int npeople) {
   int count = 1;
 
   if (vertex == -1) {
@@ -25,7 +26,8 @@ int connected_components(int* component, int vertex, int component_id, const int
     if (colour[tail] == current_colour)
       return -1;
     if (component[tail] == 0) {
-      int c = connected_components(component, tail, component_id, edgeindex, edge, colour, current_colour^1, npeople);
+      int c = connected_components(component, tail, component_id, edgeindex, edge,
+                                   colour, current_colour^1, npeople);
       if (c != -1)
         count += c;
       else
