@@ -17,7 +17,7 @@ int main() {
   int n, t;
   cin >> n >> t;
 
-  vector<int> x(n), y(n), b(n);
+  vector<int> x(n+1), y(n+1), b(n+1);
   for (int i = 1; i <= n; i++)
     cin >> x[i] >> y[i] >> b[i];
 
